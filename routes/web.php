@@ -16,6 +16,12 @@ use App\Http\Controllers\UserController;
 |
 */
 
+
+Route::get('/admin', function () {
+        return 'admin';
+})->middleware('can:visitAdmin');
+
+
 Route::get('/', [
     UserController::class,
     'showCorrectHomePage'
