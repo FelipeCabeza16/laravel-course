@@ -18,7 +18,7 @@
 
           <div class="form-group">
             <label for="email-register" class="text-muted mb-1"><small>Email</small></label>
-            <input value="{{old('username')}}" name="email" id="email-register" class="form-control" type="text" placeholder="you@example.com" autocomplete="off" />
+            <input value="{{old('email')}}" name="email" id="email-register" class="form-control" type="text" placeholder="you@example.com" autocomplete="off" />
             @error('email')
             <p class="m-0 small alert alert-danger shadow-sm">{{$message}}</p>                
             @enderror
