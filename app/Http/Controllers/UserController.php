@@ -22,6 +22,16 @@ class UserController extends Controller
         }
     }
 
+    public function profile(User $user) {
+        $posts = $user->posts()->get();
+        return view('profile-posts',
+        ['username' => $user->username,
+        'posts' => $posts,
+        'postsCount' => $posts->count(),        
+        ]
+);
+    }
+
 
     public function login(Request $request){
 

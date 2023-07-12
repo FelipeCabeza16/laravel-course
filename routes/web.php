@@ -19,25 +19,23 @@ use App\Http\Controllers\UserController;
 Route::get('/', [
     UserController::class,
     'showCorrectHomePage'
-]
-
-);
+])->name('login');
 
 
 Route::post('/register', [
     UserController::class,
     'register'
-]);
+])->middleware('guest');
 
 Route::post('/login', [
     UserController::class,
     'login'
-]);
+])->middleware('guest');
 
 Route::post('/logout', [
     UserController::class,
     'logout'
-]);
+])->middleware('mustBeLoggedIn');
 
 
 // Posts
@@ -45,9 +43,22 @@ Route::post('/logout', [
 Route::get('/create-post', [
     PostController::class,
     'showCreateForm'
-]);
+])->middleware('mustBeLoggedIn');
 
 Route::post('/create-post', [
     PostController::class,
     'storeNewPost'
+])->middleware('mustBeLoggedIn');
+
+Route::get('/post/{post}', [
+    PostController::class,
+    'viewSinglePost'
+])->middleware('mustBeLoggedIn');
+
+// Users
+
+Route::get('/profile/{user:username}', [
+    UserController::class,
+    'profile'
 ]);
+
