@@ -71,6 +71,16 @@ Route::get('/profile/{user:username}', [
     'profile'
 ]);
 
+Route::get('/profile/{user:username}/followers', [
+    UserController::class,
+    'followers'
+]);
+
+Route::get('/profile/{user:username}/following', [
+    UserController::class,
+    'following'
+]);
+
 
 // Follows 
 
