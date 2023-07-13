@@ -21,44 +21,44 @@ Route::get('/admin', function () {
         return 'admin';
 })->middleware('can:visitAdmin');
 
-
+// User
 Route::get('/', [
-    UserController::class,
-    'showCorrectHomePage'
+    UserController::class, 'showCorrectHomePage'
 ])->name('login');
 
 
 Route::post('/register', [
-    UserController::class,
-    'register'
+    UserController::class,'register'
 ])->middleware('guest');
 
 Route::post('/login', [
-    UserController::class,
-    'login'
+    UserController::class,'login'
 ])->middleware('guest');
 
 Route::post('/logout', [
-    UserController::class,
-    'logout'
+    UserController::class,'logout'
 ])->middleware('mustBeLoggedIn');
 
+Route::get('/manage-avatar', [
+    UserController::class, 'viewAvatarForm'
+])->name('mustBeLoggedIn');
+
+Route::post('/manage-avatar', [
+    UserController::class, 'storeAvatar'
+])->name('mustBeLoggedIn');
 
 // Posts
 
 Route::get('/create-post', [
-    PostController::class,
-    'showCreateForm'
+    PostController::class,'showCreateForm'
 ])->middleware('mustBeLoggedIn');
 
 Route::post('/create-post', [
-    PostController::class,
-    'storeNewPost'
+    PostController::class,'storeNewPost'
 ])->middleware('mustBeLoggedIn');
 
 Route::get('/post/{post}', [
-    PostController::class,
-    'viewSinglePost'
+    PostController::class,'viewSinglePost'
 ]);
 Route::delete('/post/{post}', [PostController::class, 'delete'])->middleware('can:delete,post');
 Route::get('/post/{post}/edit', [PostController::class, 'showEditForm'])->middleware('can:update,post');

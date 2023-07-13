@@ -5,9 +5,39 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+    public function storeAvatar(Request $request) {
+        $request->validate([
+            'avatar' => 'required|image|max:4096'
+        ]);
+
+        $user = auth()->user();
+
+        $filename = $user->id . '-' . uniqid() . '.jpg';
+
+        $imgData = Image::make($request->file('avatar'))->fit(120)->encode('jpg');
+        Storage::put('public/avatars/' . $filename, $imgData);
+
+        $oldAvatar = $user->avatar;
+
+        // Update database 
+        $user->avatar = $filename;
+        $user->save();
+
+        if ($oldAvatar != '/fallback-avatar.jpg'){
+            Storage::delete(str_replace('/storage/', '/public/', $oldAvatar));
+        }
+
+        return back()->with('success', 'Cambiaste la foto de perfil');
+
+    }
+    public function viewAvatarForm() {
+        return view('avatar-view');
+    }
 
     public function logout(){
         auth()->logout();
@@ -27,6 +57,7 @@ class UserController extends Controller
         return view('profile-posts',
         ['username' => $user->username,
         'posts' => $posts,
+        'avatar' => $user->avatar, 
         'postsCount' => $posts->count(),        
         ]
 );
