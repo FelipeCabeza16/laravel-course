@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\FollowController;
 
 
 /*
@@ -69,5 +70,19 @@ Route::get('/profile/{user:username}', [
     UserController::class,
     'profile'
 ]);
+
+
+// Follows 
+
+Route::post('/follow/{user:username}', [
+    FollowController::class,
+    'follow'
+])->name('mustBeLoggedIn');
+
+Route::post('/unfollow/{user:username}', [
+    FollowController::class,
+    'unfollow'
+])->name('mustBeLoggedIn');
+
 
 
