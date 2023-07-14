@@ -89,6 +89,13 @@ class UserController extends Controller
     }
 
 
+    public function profileRaw(User $user) {
+        return response()->json([
+            'theHTML' => view('profile-posts-only', ['posts' => $user->posts()->latest()->get()])->render(),
+            'docTitle' => $user->username . ' - Perfil ',
+        ]);
+    }
+
 
     public function followers(User $user) {
 
@@ -96,10 +103,26 @@ class UserController extends Controller
         return view('profile-followers', ['followers' => $user->followers()->latest()->get()]);
     }
 
+
+    public function followersRaw(User $user) {
+
+        return response()->json([
+            'theHTML' => view('profile-followers-only', ['followers' => $user->followers()->latest()->get()])->render(),
+            'docTitle' => $user->username . ' - Seguidores ',
+        ]);
+    }
+
     public function following(User $user) {
 
         $this->getSharedData($user);
         return view('profile-following', ['following' => $user->following()->latest()->get()]);
+    }
+
+    public function followingRaw(User $user) {
+        return response()->json([
+            'theHTML' => view('profile-following-only', ['following' => $user->following()->latest()->get()])->render(),
+            'docTitle' => $user->username . ' - Seguidos ',
+        ]);
     }
 
 

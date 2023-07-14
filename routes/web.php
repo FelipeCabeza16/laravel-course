@@ -66,22 +66,20 @@ Route::get('/post/{post}', [
 Route::delete('/post/{post}', [PostController::class, 'delete'])->middleware('can:delete,post');
 Route::get('/post/{post}/edit', [PostController::class, 'showEditForm'])->middleware('can:update,post');
 Route::put('/post/{post}', [PostController::class, 'update'])->middleware('can:update,post');
+
 // Users
 
-Route::get('/profile/{user:username}', [
-    UserController::class,
-    'profile'
-]);
+Route::get('/profile/{user:username}', [UserController::class, 'profile' ]);
+Route::get('/profile/{user:username}/followers', [ UserController::class, 'followers']);
+Route::get('/profile/{user:username}/following', [UserController::class, 'following']);
 
-Route::get('/profile/{user:username}/followers', [
-    UserController::class,
-    'followers'
-]);
+Route::middleware('cache.headers:public;max_age=20;etag')->group(function () {
+    Route::get('/profile/{user:username}/raw', [UserController::class, 'profileRaw' ]);
+    Route::get('/profile/{user:username}/followers/raw', [ UserController::class, 'followersRaw']);
+    Route::get('/profile/{user:username}/following/raw', [UserController::class, 'followingRaw']);
+});
 
-Route::get('/profile/{user:username}/following', [
-    UserController::class,
-    'following'
-]);
+
 
 
 // Follows 
