@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout docTitle="Editando: {{$post->title}}">
     <div class="container py-md-5 container--narrow">
         <form action="/post/{{$post->id}}" method="POST">
           <p><small><strong><a href="/post/{{$post->id}}">&laquo;Volver</a></strong></small></p>
