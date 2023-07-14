@@ -96,3 +96,8 @@ Route::post('/unfollow/{user:username}', [
 
 
 
+// Search
+Route::get('/search/{term}', [
+    PostController::class,
+    'search'
+]);
