@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Follow;
 use Illuminate\Http\Request;
+use App\Events\OurExampleEvent;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\View;
 use Intervention\Image\Facades\Image;
@@ -42,6 +43,12 @@ class UserController extends Controller
     }
 
     public function logout(){
+        
+        event(new OurExampleEvent(
+            ['username' => auth()->user()->username,
+            'action' => 'logout']));
+            
+        
         auth()->logout();
         return redirect('/')->with('success', 'Cerraste Sesión');;
     }
@@ -98,6 +105,7 @@ class UserController extends Controller
 
     public function login(Request $request){
 
+
         $incomingFields = $request->validate([
         'loginusername' => 'required',
         'loginpassword' => 'required',
@@ -108,7 +116,14 @@ class UserController extends Controller
             'password' => $incomingFields['loginpassword']],
 
         )) {
+
             $request->session()->regenerate();
+            
+            event(new OurExampleEvent(
+                ['username' => auth()->user()->username,
+                'action' => 'login']));
+
+            
             return redirect('/')->with('success', 'Iniciaste Sesión');
         } else {
             return redirect('/')->with('failure', 'Datos inválidos');
