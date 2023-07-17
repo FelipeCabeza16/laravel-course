@@ -70,12 +70,31 @@ class UserController extends Controller
             // }
             // Key, Seconds, Function if not exists
             $postCount = Cache::remember('postCount', 100, function(){
-                sleep(5);
+                sleep(1);
                 return Post::count();
             });
             return view('home', ['postCount' => $postCount]);
         }
     }
+
+
+    public function loginApi(Request $req) {
+        $incomingFields = $req->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
+        if (auth()->attempt($incomingFields)) {
+            $user = User::where('username', $incomingFields['username'])->first();
+            $token = $user->createToken('ourapptoken')->plainTextToken;
+            return $token;
+        } else {
+            return response()->json(['error' => 'Wrong credentials'], 401);
+        }
+
+
+    }
+
 
     private function getSharedData($user) {
         $currentlyFollowing = 0;

@@ -43,6 +43,11 @@ class PostController extends Controller
         return redirect('/profile/' . auth()->user()->username)->with('success', 'Se borró el post.');
     }
 
+    public function deleteApi(Post $post) {
+        $post->delete();
+        return 'true';
+    }
+
 
     public function storeNewPost(Request $request){
         $incomingFields = $request->validate([
@@ -75,6 +80,39 @@ class PostController extends Controller
     return redirect('/post/' . $newPost->id)->with('success', 'Post Creado!');
 
     }
+
+    public function storeNewPostApi(Request $request){
+        $incomingFields = $request->validate([
+            'title' => 'required',
+            'body' => 'required',
+        ]);
+
+    $incomingFields['title'] = strip_tags($incomingFields['title']);
+    $incomingFields['body'] = strip_tags($incomingFields['body']);
+    $incomingFields['user_id'] = auth()->id();
+
+
+
+    $newPost = Post::create($incomingFields);
+
+    // Send email (sync task), queue it up with a job
+    // Mail::to(auth()->user()->email)->send(new NewPostEmail([
+    //     'name' => auth()->user()->username,
+    //     'title' => $newPost->title,
+    // ]));
+
+    // Async
+    dispatch(new SendNewPostEmail([
+        'sendTo' => auth()->user()->email,
+        'name' => auth()->user()->username,
+        'title' => $newPost->title,
+    ]));
+
+
+    return $newPost->id;
+
+    }
+    
         
     public function showCreateForm(){
          return view('create-post');
