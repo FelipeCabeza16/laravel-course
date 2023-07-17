@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Jobs\SendNewPostEmail;
+use Illuminate\Support\Facades\Mail;
 
 class PostController extends Controller
 {
@@ -55,6 +57,20 @@ class PostController extends Controller
 
 
     $newPost = Post::create($incomingFields);
+
+    // Send email (sync task), queue it up with a job
+    // Mail::to(auth()->user()->email)->send(new NewPostEmail([
+    //     'name' => auth()->user()->username,
+    //     'title' => $newPost->title,
+    // ]));
+
+    // Async
+    dispatch(new SendNewPostEmail([
+        'sendTo' => auth()->user()->email,
+        'name' => auth()->user()->username,
+        'title' => $newPost->title,
+    ]));
+
 
     return redirect('/post/' . $newPost->id)->with('success', 'Post Creado!');
 
